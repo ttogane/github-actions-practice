@@ -5,9 +5,6 @@ on:
     types: [ synchronize, reopend, opned, closed]
     branches:
       - main
-  push:
-    branches:
-      - main
   workflow_dispatch:
     types: [build]
     branches:
