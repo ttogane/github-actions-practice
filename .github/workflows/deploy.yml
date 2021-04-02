@@ -24,7 +24,6 @@ jobs:
 
   deploy-alpha:
     name: Deploy Alpha
-    needs: pr
     runs-on: ubuntu-latest
     environment: development
     if: github.event.pull_request.merged && github.event.action == 'closed'
