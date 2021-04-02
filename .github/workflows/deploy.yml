@@ -13,7 +13,7 @@ jobs:
   pr:
     name: PR
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && (github.event.action == 'opend' || github.event.action == 'reopend')
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
     steps:
       - name: checkout
         uses: actions/checkout@master
