@@ -2,6 +2,7 @@ name: Deploy
 
 on:
   pull_request:
+    types: [ synchronize, reopend, opned, closed]
     branches:
       - main
   push:
@@ -16,6 +17,7 @@ jobs:
   pr:
     name: PR
     runs-on: ubuntu-latest
+    if: github.event.action == 'opned' || github.event.action == 'reopned'
     steps:
       - name: checkout
         uses: actions/checkout@master
