@@ -7,6 +7,7 @@ on:
 
 jobs:
   pr:
+    name: PR
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -34,7 +35,7 @@ jobs:
     name: Deploy
     needs: deploy-alpha
     runs-on: ubuntu-latest
-    environment: development
+    environment: production
     if: github.event.workflow_dispatch
     steps:
       - name: checkout
