@@ -21,7 +21,7 @@ jobs:
     needs: pr
     runs-on: ubuntu-latest
     environment: development
-    if: github.event.pull_request.merged && github.event.pull_request.closed
+    if: github.event.pull_request.merged && github.event.action == 'closed'
     steps:
       - name: checkout
         uses: actions/checkout@v2
