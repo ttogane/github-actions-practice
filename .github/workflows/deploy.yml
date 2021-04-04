@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: development
     #if: github.event.pull_request.merged && github.event.action == 'closed'
-    if: github.event_name == 'push' && github.event.pr.conclusion != 'success'
+    if: github.event_name == 'push' && github.event.pr.conclusion == 'success'
 
     steps:
       - name: checkout
@@ -44,7 +44,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     environment: production
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && github.event.deploy-alpha.conclusion == 'success'
     steps:
       - name: checkout
         uses: actions/checkout@v2
