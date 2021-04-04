@@ -41,7 +41,6 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: deploy-alpha
     runs-on: ubuntu-latest
     environment: production
     if: github.event_name == 'workflow_dispatch'
