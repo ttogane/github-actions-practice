@@ -2,6 +2,7 @@ name: Deploy
 
 on:
   pull_request:
+    # types: [ synchronize, reopend, opned, closed]
     branches:
       - main
   push:
@@ -28,7 +29,8 @@ jobs:
     name: Deploy Alpha
     runs-on: ubuntu-latest
     environment: development
-    if: github.event.pull_request.merged && github.event.action == 'closed'
+    #if: github.event.pull_request.merged && github.event.action == 'closed'
+    if: github.event_name == 'push'
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -39,7 +41,6 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: deploy-alpha
     runs-on: ubuntu-latest
     environment: production
     if: github.event_name == 'workflow_dispatch'
