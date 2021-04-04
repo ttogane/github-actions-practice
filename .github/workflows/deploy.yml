@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   pull_request:
-    types: [ synchronize, reopend, opned, closed]
+    # types: [ synchronize, reopend, opned, closed]
     branches:
       - main
   push:
