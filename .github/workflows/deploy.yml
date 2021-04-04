@@ -5,6 +5,7 @@ on:
     # types: [ synchronize, reopend, opned, closed]
     branches:
       - main
+  pr: 
   push:
     branches:
       - main
@@ -30,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: development
     #if: github.event.pull_request.merged && github.event.action == 'closed'
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.event.pr.conclusion != 'success'
     steps:
       - name: checkout
         uses: actions/checkout@v2
