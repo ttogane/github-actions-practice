@@ -15,6 +15,9 @@ jobs:
   pr:
     name: PR
     runs-on: ubuntu-latest
+    outputs:
+      # This output will be used to communicate between jobs
+      id: [deploy_condition]
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     steps:
       - name: checkout
@@ -31,8 +34,8 @@ jobs:
   deploy-alpha:
     name: Deploy Alpha
     runs-on: ubuntu-latest
-    environment: development
-    if: steps.set_deploy_condition.outputs.deploy_condition == 'true' && github.event.pull_request.merged && github.event.action == 'closed'
+    needs: pr
+    if: needs.pr.outputs.deploy_condition == 'true' && github.event.pull_request.merged && github.event.action == 'closed'
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -44,7 +47,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: production
+    needs: pr
     if: github.event_name == 'workflow_dispatch' && github.event.action == 'push'
     steps:
       - name: checkout
