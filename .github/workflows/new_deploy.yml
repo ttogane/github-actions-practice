@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       # This output will be used to communicate between jobs
-      id: [deploy_condition]
+      id: deploy_condition
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     steps:
       - name: checkout
@@ -29,13 +29,13 @@ jobs:
 
       - name: Set Deploy Condition
         id: set_deploy_condition
-        run: echo "::set-output name=deploy_condition::${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"
+        run: echo "deploy_condition=true" >> $GITHUB_ENV
 
   deploy-alpha:
     name: Deploy Alpha
     runs-on: ubuntu-latest
     needs: pr
-    if: needs.pr.outputs.deploy_condition == 'true' && github.event.pull_request.merged && github.event.action == 'closed'
+    if: env.deploy_condition == 'true' && github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -48,7 +48,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: pr
-    if: github.event_name == 'workflow_dispatch' && github.event.action == 'push'
+    if: env.deploy_condition == 'true' && github.event_name == 'workflow_dispatch' && github.event.action == 'push'
     steps:
       - name: checkout
         uses: actions/checkout@v2
