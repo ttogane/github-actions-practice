@@ -1,0 +1,55 @@
+name: Deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    branches:
+      - main
+
+jobs:
+  pr:
+    name: PR
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    steps:
+      - name: checkout
+        uses: actions/checkout@master
+
+      - name: lint-check
+        run: |
+          echo "lint check..." 
+
+      - name: Set Deploy Condition
+        id: set_deploy_condition
+        run: echo "::set-output name=deploy_condition::${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}"
+
+  deploy-alpha:
+    name: Deploy Alpha
+    runs-on: ubuntu-latest
+    environment: development
+    if: steps.set_deploy_condition.outputs.deploy_condition == 'true' && github.event.pull_request.merged && github.event.action == 'closed'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: build
+        run: |
+          echo "run development build"
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+    if: github.event_name == 'workflow_dispatch' && github.event.action == 'push'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: build
+        run: |
+          echo "run production build"
