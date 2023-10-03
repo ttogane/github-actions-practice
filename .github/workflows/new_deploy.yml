@@ -1,0 +1,60 @@
+name: Deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    branches:
+      - main
+
+jobs:
+  pr:
+    name: PR
+    runs-on: ubuntu-latest
+    outputs:
+      # This output will be used to communicate between jobs
+      id: pr_condition
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    steps:
+      - name: checkout
+        uses: actions/checkout@master
+
+      - name: lint-check
+        run: |
+          echo "lint check..." 
+
+      - name: Save state
+        run: echo "pr_condition=true" >> $GITHUB_STATE
+
+      - name: Set output
+        run: echo "pr_condition=true" >> $GITHUB_OUTPUT
+
+  deploy-alpha:
+    name: Deploy Alpha
+    runs-on: ubuntu-latest
+    needs: pr
+    if: github.event_name == 'push' && needs.pr.outputs.pr_condition == true
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: build
+        run: |
+          echo "run development build"
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: pr
+    if: needs.pr.result == 'success' && github.event_name == 'workflow_dispatch' && github.event.action == 'push'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: build
+        run: |
+          echo "run production build"
