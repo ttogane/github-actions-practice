@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       # This output will be used to communicate between jobs
-      id: deploy_condition
+      id: pr_condition
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     steps:
       - name: checkout
@@ -27,9 +27,11 @@ jobs:
         run: |
           echo "lint check..." 
 
-      - name: Set Deploy Condition
-        id: set_deploy_condition
-        run: echo "::set-output name=deploy_condition::true"
+      - name: Save state
+        run: echo "pr_condition=true" >> $GITHUB_STATE
+
+      - name: Set output
+        run: echo "pr_condition=true" >> $GITHUB_OUTPUT
 
   deploy-alpha:
     name: Deploy Alpha
